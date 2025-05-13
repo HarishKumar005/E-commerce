@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>CoolZone E-Commerce</title>
+    <style>
+        /* Reset & basics */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #1e88e5;
+            color: white;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-weight: 700;
+            font-size: 1.3rem;
+            cursor: default;
+        }
+
+        nav {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        nav button {
+            background: transparent;
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            padding: 8px 10px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav button:hover,
+        nav button.active {
+            background: #1565c0;
+        }
+
+        main {
+            flex: 1;
+            padding: 12px 15px 30px;
+            overflow-y: auto;
+        }
+
+        /* Search bar */
+        .search-bar-container {
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
+        input#search-input {
+            width: 100%;
+            max-width: 380px;
+            padding: 8px 14px;
+            font-size: 1rem;
+            border: 2px solid #1e88e5;
+            border-radius: 30px;
+            outline-offset: 2px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        input#search-input:focus {
+            box-shadow: 0 0 6px #1e88e5;
+            border-color: #1565c0;
+        }
+
+        /* Slider */
+        .slider {
+            width: 100%;
+            max-height: 180px;
+            overflow: hidden;
+            border-radius: 10px;
+            position: relative;
+            margin-bottom: 16px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .slider img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: none;
+        }
+
+        .slider img.active {
+            display: block;
+            animation: fadeIn 50s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 4;
+            }
+        }
+
+        /* Running marquee container */
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            background: #f44336;
+            border-radius: 10px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            white-space: nowrap;
+            position: relative;
+            height: 34px;
+            line-height: 34px;
+        }
+
+        /* CSS animation-based marquee */
+        .marquee-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marqueeMove 12s linear infinite;
+        }
+
+        @keyframes marqueeMove {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Products grid - home first section 4 per row */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Products grid - categories 3 per row */
+        .products-grid-cat {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        /* Products grid - buy one get one block 2 per row bigger */
+        .products-grid-bogo {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 7px rgba(0,0,0,0.1);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .product-card-bogo {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card-bogo:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 110px;
+            border-radius: 10px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .product-image-bogo {
+            width: 100%;
+            height: 170px;
+            border-radius: 14px;
+            object-fit: contain;
+            margin-bottom: 14px;
+        }
+
+        .product-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 5px;
+            min-height: 40px;
+        }
+
+        .product-price {
+            color: #1e88e5;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .add-cart-btn {
+            background: #1e88e5;
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-cart-btn:hover {
+            background: #1565c0;
+        }
+
+        /* Buy One Get One banner block */
+        .bogo-banner {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            background: url('https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1280&q=80') center center/cover no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .bogo-banner h2 {
+            font-size: 2.2rem;
+            color: #fff;
+            font-weight: 900;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+            user-select: none;
+        }
+
+        /* Quick links on pages bottom */
+        .quick-links {
+            margin-top: 10px;
+            padding: 12px;
+            background: #e3f2fd;
+            border-radius: 12px;
+            box-shadow: inset 0 0 10px #bbdefb;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .quick-links button {
+            background: #2196f3;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .quick-links button:hover {
+            background: #0d47a1;
+        }
+
+        /* Product images marquee container */
+        .product-marquee-container {
+            overflow: hidden;
+            width: 100%;
+            max-height: 110px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            background: #fff;
+        }
+
+        .product-marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marqueeLTR 50s linear infinite;
+            gap: 20px;
+            padding: 10px 0;
+            align-items: center;
+        }
+
+        .product-marquee-item {
+            flex: 0 0 auto;
+        }
+
+        .product-marquee-item img {
+            width: 100px;
+            height: 90px;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            user-select: none;
+        }
+
+        @keyframes marqueeLTR {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Cart page */
+        .cart-container {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        table.cart-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table.cart-table th, table.cart-table td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table.cart-table th {
+            background: #1e88e5;
+            color: white;
+        }
+
+        table.cart-table td img {
+            height: 60px;
+            width: 60px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        input.qty-input {
+            width: 50px;
+            text-align: center;
+            font-weight: 600;
+            padding: 4px 6px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button.remove-btn {
+            background: #e53935;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button.remove-btn:hover {
+            background: #b71c1c;
+        }
+
+        .checkout-container {
+            text-align: right;
+            margin-top: 15px;
+        }
+
+        button.checkout-btn {
+            background: #388e3c;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 10px 22px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 12px rgba(56,142,60,0.7);
+            transition: background-color 0.3s ease;
+        }
+
+        button.checkout-btn:hover {
+            background: #1b5e20;
+        }
+
+        /* About page */
+        .about-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            line-height: 1.5;
+            font-size: 1rem;
+        }
+
+        /* Contact info styling */
+        .contact-info {
+            margin-top: 18px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #444;
+        }
+
+        /* Responsive for mobile 350px max width and height 600px max */
+        @media (max-width: 400px) {
+            body {
+                font-size: 14px;
+            }
+            header h1 {
+                font-size: 1.1rem;
+            }
+            nav button {
+                font-size: 0.9rem;
+                padding: 6px 8px;
+            }
+            .product-image {
+                height: 90px;
+            }
+            .product-image-bogo {
+                height: 140px;
+            }
+            table.cart-table td img {
+                height: 50px;
+                width: 50px;
+            }
+            /* grids adjustment for smaller screens */
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            .products-grid-cat {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .products-grid-bogo {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+            .bogo-banner h2 {
+                font-size: 1.6rem;
+                padding: 0 10px;
+                text-align: center;
+            }
+            .product-marquee-item img {
+                width: 80px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>CoolZone</h1>
+    <nav aria-label="Primary">
+        <button class="nav-item active" data-page="home" aria-current="page">Home</button>
+        <button class="nav-item" data-page="electronics">Electronics</button>
+        <button class="nav-item" data-page="clothing">Clothing</button>
+        <button class="nav-item" data-page="books">Books</button>
+        <button class="nav-item" data-page="sports">Sports</button>
+        <button class="nav-item" data-page="about">About</button>
+        <button class="nav-item" data-page="cart">Cart (<span id="cart-count">0</span>)</button>
+    </nav>
+</header>
+
+<main id="main-content" tabindex="0">
+    <!-- Content changes dynamically here -->
+</main>
+
+<script>
+(() => {
+    // Data for products
+    const products = {
+        electronics: [
+            { id: 'el1', title: 'Wireless Headphones', price: 49.99, image: 'https://images.unsplash.com/photo-1512499617640-c2f9991eda3c?auto=format&fit=crop&w=400&q=80' },
+            { id: 'el2', title: 'Smart Watch', price: 129.99, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80' },
+            { id: 'el3', title: 'Bluetooth Speaker', price: 39.99, image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80' },
+            { id: 'el4', title: 'VR Headset', price: 299.99, image: 'https://images.unsplash.com/photo-1596495578061-c4c4e6dc4f92?auto=format&fit=crop&w=400&q=80' },
+            { id: 'el5', title: 'DSLR Camera', price: 549.99, image: 'https://images.unsplash.com/photo-1519183071298-a2962ccade0b?auto=format&fit=crop&w=400&q=80' },
+            { id: 'el6', title: 'Smartphone', price: 799.99, image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80' },
+            { id: 'el7', title: 'Laptop', price: 1099.99, image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80' },
+            { id: 'el8', title: 'Drone with Camera', price: 699.99, image: 'https://images.unsplash.com/photo-1518773553398-650c184e0bb3?auto=format&fit=crop&w=400&q=80' },
+            { id: 'el9', title: 'Portable Charger', price: 24.99, image: 'https://images.unsplash.com/photo-1496180727794-817822f65950?auto=format&fit=crop&w=400&q=80' },
+            { id: 'el10', title: 'Gaming Mouse', price: 59.99, image: 'https://images.unsplash.com/photo-1589561084283-930aa7b1e412?auto=format&fit=crop&w=400&q=80' },
+            { id: 'el11', title: 'External Hard Drive', price: 89.99, image: 'https://images.unsplash.com/photo-1562072549-964a9ada13a2?auto=format&fit=crop&w=400&q=80' },
+            { id: 'el12', title: 'Smart Home Hub', price: 150.00, image: 'https://images.unsplash.com/photo-1542751110-97427bbecf20?auto=format&fit=crop&w=400&q=80' }
+        ],
+        books: [
+            { id: 'bk1', title: 'The Great Gatsby', price: 14.99, image: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bk2', title: 'To Kill a Mockingbird', price: 12.99, image: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bk3', title: '1984 by George Orwell', price: 13.49, image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bk4', title: 'The Catcher in the Rye', price: 11.99, image: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bk5', title: 'Pride and Prejudice', price: 19.99, image: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bk6', title: 'The Hobbit', price: 17.99, image: 'https://images.unsplash.com/photo-1510760062773-bf3408dcb308?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bk7', title: 'Sapiens: A Brief History of Humankind', price: 21.99, image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bk8', title: 'Meditations by Marcus Aurelius', price: 9.99, image: 'https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bk9', title: 'The Alchemist', price: 15.99, image: 'https://images.unsplash.com/photo-1512813195386-6cf811ad3542?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bk10', title: 'Blink by Malcolm Gladwell', price: 14.49, image: 'https://images.unsplash.com/photo-1463320726281-696a485928c7?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bk11', title: 'Thinking, Fast and Slow', price: 18.99, image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bk12', title: 'Educated: A Memoir', price: 16.99, image: 'https://images.unsplash.com/photo-1476958526483-36efcaa80caa?auto=format&fit=crop&w=400&q=80' }
+        ],
+        clothing: [
+            { id: 'cl1', title: 'Casual T-shirt', price: 19.99, image: 'https://images.unsplash.com/photo-1514996937319-344454492b37?auto=format&fit=crop&w=400&q=80' },
+            { id: 'cl2', title: 'Jeans', price: 39.99, image: 'https://images.unsplash.com/photo-1521334884684-d80222895322?auto=format&fit=crop&w=400&q=80' },
+            { id: 'cl3', title: 'Leather Jacket', price: 159.99, image: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=400&q=80' },
+            { id: 'cl4', title: 'Sneakers', price: 59.99, image: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=400&q=80' },
+            { id: 'cl5', title: 'Summer Dress', price: 34.99, image: 'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=400&q=80' },
+            { id: 'cl6', title: 'Winter Coat', price: 99.99, image: 'https://images.unsplash.com/photo-1542068829-1115f7259450?auto=format&fit=crop&w=400&q=80' },
+            { id: 'cl7', title: 'Hat', price: 14.99, image: 'https://images.unsplash.com/photo-1478145046317-39f10e56b5e9?auto=format&fit=crop&w=400&q=80' },
+            { id: 'cl8', title: 'Scarf', price: 18.99, image: 'https://images.unsplash.com/photo-1520962918707-9ebb3591da98?auto=format&fit=crop&w=400&q=80' },
+            { id: 'cl9', title: 'Wristwatch', price: 199.99, image: 'https://images.unsplash.com/photo-1507537509458-b8312d17f2aa?auto=format&fit=crop&w=400&q=80' },
+            { id: 'cl10', title: 'Sunglasses', price: 49.99, image: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=400&q=80' },
+            { id: 'cl11', title: 'Formal Shirt', price: 29.99, image: 'https://images.unsplash.com/photo-1520975698858-84a904f3af24?auto=format&fit=crop&w=400&q=80' },
+            { id: 'cl12', title: 'High Heels', price: 79.99, image: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=400&q=80' }
+        ],
+        sports: [
+            { id: 'sp1', title: 'Football', price: 24.99, image: 'https://images.unsplash.com/photo-1508264165352-c3038a50b640?auto=format&fit=crop&w=400&q=80' },
+            { id: 'sp2', title: 'Tennis Racket', price: 79.99, image: 'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=400&q=80' },
+            { id: 'sp3', title: 'Running Shoes', price: 89.99, image: 'https://images.unsplash.com/photo-1520975698858-84a904f3af24?auto=format&fit=crop&w=400&q=80' },
+            { id: 'sp4', title: 'Yoga Mat', price: 29.99, image: 'https://images.unsplash.com/photo-1590080877777-493d065c150c?auto=format&fit=crop&w=400&q=80' },
+            { id: 'sp5', title: 'Golf Clubs Set', price: 299.99, image: 'https://images.unsplash.com/photo-1506719040630-58eb9a9d6756?auto=format&fit=crop&w=400&q=80' },
+            { id: 'sp6', title: 'Basketball', price: 27.99, image: 'https://images.unsplash.com/photo-1507537509458-b8312d17f2aa?auto=format&fit=crop&w=400&q=80' },
+            { id: 'sp7', title: 'Baseball Bat', price: 42.99, image: 'https://images.unsplash.com/photo-1533616688417-7dd217a3ef50?auto=format&fit=crop&w=400&q=80' },
+            { id: 'sp8', title: 'Hiking Backpack', price: 59.99, image: 'https://images.unsplash.com/photo-1507209696996-6d5596faa700?auto=format&fit=crop&w=400&q=80' },
+            { id: 'sp9', title: 'Mountain Bike', price: 659.99, image: 'https://images.unsplash.com/photo-1518655048521-f130df041f66?auto=format&fit=crop&w=400&q=80' },
+            { id: 'sp10', title: 'Camping Tent', price: 299.99, image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80' },
+            { id: 'sp11', title: 'Fishing Rod', price: 79.99, image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=400&q=80' },
+            { id: 'sp12', title: 'Skateboard', price: 64.99, image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80' }
+        ],
+        bogoProducts: [
+            { id: 'bogo1', title: 'Wireless Earbuds', price: 29.99, image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bogo2', title: 'Classic Novel Bundle', price: 25.99, image: 'https://images.unsplash.com/photo-1476958526483-36efcaa80caa?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bogo3', title: 'Fashion Sunglasses', price: 59.99, image: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bogo4', title: 'Yoga Pants', price: 39.99, image: 'https://images.unsplash.com/photo-1533227268428-f99e0068ae2c?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bogo5', title: 'Smartphone Case', price: 12.99, image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80' },
+            { id: 'bogo6', title: 'Bluetooth Tracker', price: 19.99, image: 'https://images.unsplash.com/photo-1522289830239-981df43ba6af?auto=format&fit=crop&w=400&q=80' }
+        ]
+    };
+
+    // Combined array for home page marquee and search
+    const allProducts = [
+        ...products.electronics,
+        ...products.books,
+        ...products.clothing,
+        ...products.sports
+    ];
+
+    // Sliding images for home
+    const sliderImages = [
+        'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1280&q=70',
+        'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1280&q=70',
+        'https://images.unsplash.com/photo-1470309864661-68328b2cd0a5?auto=format&fit=crop&w=1280&q=70'
+    ];
+
+    let cart = JSON.parse(localStorage.getItem('coolzone-cart')) || {};
+
+    function saveCart() {
+        localStorage.setItem('coolzone-cart', JSON.stringify(cart));
+        updateCartCount();
+    }
+
+    function updateCartCount() {
+        const count = Object.values(cart).reduce((acc, item) => acc + item.quantity, 0);
+        document.getElementById('cart-count').textContent = count;
+    }
+
+    const navButtons = document.querySelectorAll('nav button.nav-item');
+    const mainContent = document.getElementById('main-content');
+
+    function setActiveNav(page) {
+        navButtons.forEach(btn => {
+            if (btn.dataset.page === page) {
+                btn.classList.add('active');
+                btn.setAttribute('aria-current', 'page');
+            } else {
+                btn.classList.remove('active');
+                btn.removeAttribute('aria-current');
+            }
+        });
+    }
+
+    function createProductCard(product, bogo = false) {
+        const card = document.createElement('div');
+        card.className = bogo ? 'product-card-bogo' : 'product-card';
+
+        const img = document.createElement('img');
+        img.className = bogo ? 'product-image-bogo' : 'product-image';
+        img.src = product.image;
+        img.alt = product.title;
+        card.appendChild(img);
+
+        const title = document.createElement('div');
+        title.className = 'product-title';
+        title.textContent = product.title;
+        card.appendChild(title);
+
+        const price = document.createElement('div');
+        price.className = 'product-price';
+        price.textContent = `$${product.price.toFixed(2)}`;
+        card.appendChild(price);
+
+        const btn = document.createElement('button');
+        btn.className = 'add-cart-btn';
+        btn.textContent = 'Add to Cart';
+        btn.addEventListener('click', () => {
+            addToCart(product);
+            btn.textContent = 'Added!';
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.textContent = 'Add to Cart';
+                btn.disabled = false;
+            }, 1200);
+        });
+        card.appendChild(btn);
+
+        return card;
+    }
+
+    function addToCart(product) {
+        if (cart[product.id]) {
+            cart[product.id].quantity++;
+        } else {
+            cart[product.id] = {
+                ...product,
+                quantity: 1
+            };
+        }
+        saveCart();
+    }
+
+    function removeFromCart(productId) {
+        delete cart[productId];
+        saveCart();
+    }
+
+    function updateQuantity(productId, quantity) {
+        if (quantity < 1) return;
+        cart[productId].quantity = quantity;
+        saveCart();
+    }
+
+    function renderQuickLinks() {
+        const quickLinks = document.createElement('section');
+        quickLinks.className = 'quick-links';
+        quickLinks.setAttribute('aria-label', 'Quick links to other pages');
+
+        ['home', 'electronics', 'clothing', 'books', 'sports', 'about', 'cart'].forEach(page => {
+            const btn = document.createElement('button');
+            btn.textContent = page.charAt(0).toUpperCase() + page.slice(1);
+            btn.addEventListener('click', () => {
+                navigateTo(page);
+            });
+            quickLinks.appendChild(btn);
+        });
+
+        return quickLinks;
+    }
+
+    function createProductImageMarquee(productList) {
+        if (!productList || productList.length === 0) return null;
+        const container = document.createElement('div');
+        container.className = 'product-marquee-container';
+        container.setAttribute('aria-label', 'Scrolling product images');
+
+        const track = document.createElement('div');
+        track.className = 'product-marquee-track';
+
+        // Duplicate the list to create continuous effect
+        const combinedList = [...productList, ...productList];
+
+        combinedList.forEach(product => {
+            const item = document.createElement('div');
+            item.className = 'product-marquee-item';
+            const img = document.createElement('img');
+            img.src = product.image;
+            img.alt = product.title;
+            item.appendChild(img);
+            track.appendChild(item);
+        });
+
+        container.appendChild(track);
+        return container;
+    }
+
+    function renderHome() {
+        mainContent.innerHTML = '';
+
+        // Search bar
+        const searchContainer = document.createElement('div');
+        searchContainer.className = 'search-bar-container';
+        const searchInput = document.createElement('input');
+        searchInput.type = 'search';
+        searchInput.id = 'search-input';
+        searchInput.placeholder = 'Search products...';
+        searchInput.setAttribute('aria-label', 'Search products');
+        searchInput.autocomplete = 'off';
+        searchContainer.appendChild(searchInput);
+        mainContent.appendChild(searchContainer);
+
+        // Slider
+        const slider = document.createElement('div');
+        slider.className = 'slider';
+        slider.setAttribute('aria-label', 'Promotional image slider');
+        let currentIndex = 0;
+
+        sliderImages.forEach((src, idx) => {
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = `Slide image ${idx + 1}`;
+            if (idx === 0) img.classList.add('active');
+            slider.appendChild(img);
+        });
+        mainContent.appendChild(slider);
+
+        setInterval(() => {
+            const imgs = slider.querySelectorAll('img');
+            imgs[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % imgs.length;
+            imgs[currentIndex].classList.add('active');
+        }, 4000);
+
+        // Marquee text
+        const marqueeContainer = document.createElement('div');
+        marqueeContainer.className = 'marquee-container';
+        const marqueeText = document.createElement('div');
+        marqueeText.className = 'marquee-text';
+        marqueeText.textContent = 'Sales Ends in an hour, grab the Products';
+        marqueeContainer.appendChild(marqueeText);
+        mainContent.appendChild(marqueeContainer);
+
+        // First 12 products 4 per row
+        const firstProductsSection = document.createElement('section');
+        firstProductsSection.setAttribute('aria-label', 'Featured Products');
+
+        const firstGrid = document.createElement('div');
+        firstGrid.className = 'products-grid';
+
+        for (let i = 0; i < 12; i++) {
+            const product = allProducts[i];
+            if (!product) break;
+            const card = createProductCard(product);
+            firstGrid.appendChild(card);
+        }
+        firstProductsSection.appendChild(firstGrid);
+        mainContent.appendChild(firstProductsSection);
+
+        // BOGO section banner
+        const bogoBanner = document.createElement('div');
+        bogoBanner.className = 'bogo-banner';
+        const bogoText = document.createElement('h2');
+        bogoText.textContent = 'Buy One Get One';
+        bogoBanner.appendChild(bogoText);
+        mainContent.appendChild(bogoBanner);
+
+        // 6 BOGO products - 2 per row bigger cards
+        const bogoSection = document.createElement('section');
+        bogoSection.setAttribute('aria-label', 'Buy One Get One Products');
+        const bogoGrid = document.createElement('div');
+        bogoGrid.className = 'products-grid-bogo';
+
+        products.bogoProducts.forEach(product => {
+            const card = createProductCard(product, true);
+            bogoGrid.appendChild(card);
+        });
+        bogoSection.appendChild(bogoGrid);
+        mainContent.appendChild(bogoSection);
+
+        // Product images marquee before quick links
+        const marqueeImages = createProductImageMarquee(allProducts);
+        if (marqueeImages) mainContent.appendChild(marqueeImages);
+
+        // Quick links
+        mainContent.appendChild(renderQuickLinks());
+
+        // Search filter
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+
+            // Filter first products
+            firstGrid.innerHTML = '';
+            let countShown = 0;
+            for (let i = 0; i < allProducts.length && countShown < 12; i++) {
+                const product = allProducts[i];
+                if (product.title.toLowerCase().includes(searchTerm)) {
+                    const card = createProductCard(product);
+                    firstGrid.appendChild(card);
+                    countShown++;
+                }
+            }
+
+            // Filter BOGO products
+            bogoGrid.innerHTML = '';
+            const filteredBogo = products.bogoProducts.filter(p => p.title.toLowerCase().includes(searchTerm));
+            if (filteredBogo.length === 0) {
+                const msg = document.createElement('p');
+                msg.style.gridColumn = '1 / -1';
+                msg.style.textAlign = 'center';
+                msg.style.color = '#777';
+                msg.style.fontWeight = '600';
+                msg.textContent = 'No Buy One Get One products found.';
+                bogoGrid.appendChild(msg);
+            } else {
+                filteredBogo.forEach(product => {
+                    const card = createProductCard(product, true);
+                    bogoGrid.appendChild(card);
+                });
+            }
+
+            // Update marquee images
+            if (marqueeImages) {
+                const newMarquee = createProductImageMarquee(allProducts.filter(p => p.title.toLowerCase().includes(searchTerm)));
+                mainContent.replaceChild(newMarquee, marqueeImages);
+            }
+        });
+    }
+
+    function renderCategory(category) {
+        mainContent.innerHTML = '';
+        const categoryTitle = document.createElement('h2');
+        categoryTitle.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+        categoryTitle.style.marginBottom = '20px';
+        mainContent.appendChild(categoryTitle);
+
+        const grid = document.createElement('div');
+        grid.className = 'products-grid-cat';
+
+        products[category].forEach(product => {
+            const card = createProductCard(product);
+            grid.appendChild(card);
+        });
+
+        mainContent.appendChild(grid);
+
+        // Product images marquee using category products
+        const marqueeImages = createProductImageMarquee(products[category]);
+        if (marqueeImages) mainContent.appendChild(marqueeImages);
+
+        // Quick links at bottom
+        mainContent.appendChild(renderQuickLinks());
+    }
+
+    function renderAbout() {
+        mainContent.innerHTML = '';
+
+        const title = document.createElement('h2');
+        title.textContent = 'About CoolZone';
+        title.style.marginBottom = '15px';
+        mainContent.appendChild(title);
+
+        const aboutDiv = document.createElement('div');
+        aboutDiv.className = 'about-section';
+        aboutDiv.innerHTML = `
+            <p>Welcome to CoolZone, your ultimate destination for trending products across categories including electronics, clothing, books, and sports gear.</p>
+            <p>We aim to provide a seamless shopping experience with an easy to use interface and secure checkout process.</p>
+            <p>Contact us for any questions or feedback. Happy shopping!</p>
+        `;
+
+        const contactDiv = document.createElement('div');
+        contactDiv.className = 'contact-info';
+        contactDiv.innerHTML = `
+            <p><strong>Contact Us:</strong></p>
+            <p>Email: support@coolzone.com</p>
+            <p>Phone: +1 800 123 4567</p>
+            <p>Address: 123 CoolZone Ave, Shop City, Country</p>
+        `;
+
+        mainContent.appendChild(aboutDiv);
+        mainContent.appendChild(contactDiv);
+
+        mainContent.appendChild(renderQuickLinks());
+    }
+
+    function renderCart() {
+        mainContent.innerHTML = '';
+        const title = document.createElement('h2');
+        title.textContent = 'Your Shopping Cart';
+        title.style.marginBottom = '15px';
+        mainContent.appendChild(title);
+
+        const container = document.createElement('div');
+        container.className = 'cart-container';
+
+        if (Object.keys(cart).length === 0) {
+            const emptyMsg = document.createElement('p');
+            emptyMsg.textContent = 'Your cart is empty. Add products to see them here.';
+            emptyMsg.style.fontWeight = '600';
+            emptyMsg.style.color = '#777';
+            container.appendChild(emptyMsg);
+        } else {
+            const table = document.createElement('table');
+            table.className = 'cart-table';
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr>
+                    <th>Item</th>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                    <th>Remove</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+
+            let total = 0;
+            Object.values(cart).forEach(item => {
+                const subtotal = item.price * item.quantity;
+                total += subtotal;
+
+                const tr = document.createElement('tr');
+
+                const imgTd = document.createElement('td');
+                const img = document.createElement('img');
+                img.src = item.image;
+                img.alt = item.title;
+                imgTd.appendChild(img);
+                tr.appendChild(imgTd);
+
+                const titleTd = document.createElement('td');
+                titleTd.textContent = item.title;
+                tr.appendChild(titleTd);
+
+                const priceTd = document.createElement('td');
+                priceTd.textContent = `$${item.price.toFixed(2)}`;
+                tr.appendChild(priceTd);
+
+                const qtyTd = document.createElement('td');
+                const qtyInput = document.createElement('input');
+                qtyInput.type = 'number';
+                qtyInput.min = '1';
+                qtyInput.value = item.quantity;
+                qtyInput.className = 'qty-input';
+                qtyInput.setAttribute('aria-label', `Quantity for ${item.title}`);
+                qtyInput.addEventListener('change', e => {
+                    const val = parseInt(e.target.value);
+                    if (isNaN(val) || val < 1) {
+                        e.target.value = item.quantity;
+                        return;
+                    }
+                    updateQuantity(item.id, val);
+                    renderCart();
+                });
+                qtyTd.appendChild(qtyInput);
+                tr.appendChild(qtyTd);
+
+                const subtotalTd = document.createElement('td');
+                subtotalTd.textContent = `$${subtotal.toFixed(2)}`;
+                tr.appendChild(subtotalTd);
+
+                const removeTd = document.createElement('td');
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.setAttribute('aria-label', `Remove ${item.title} from cart`);
+                removeBtn.textContent = 'Remove';
+                removeBtn.addEventListener('click', () => {
+                    removeFromCart(item.id);
+                    renderCart();
+                });
+                removeTd.appendChild(removeBtn);
+                tr.appendChild(removeTd);
+
+                tbody.appendChild(tr);
+            });
+
+            table.appendChild(tbody);
+            container.appendChild(table);
+
+            const checkoutDiv = document.createElement('div');
+            checkoutDiv.className = 'checkout-container';
+
+            const totalSpan = document.createElement('span');
+            totalSpan.textContent = `Total: $${total.toFixed(2)}`;
+            totalSpan.style.fontWeight = '700';
+            totalSpan.style.marginRight = '20px';
+            totalSpan.style.fontSize = '1.1rem';
+
+            const checkoutBtn = document.createElement('button');
+            checkoutBtn.className = 'checkout-btn';
+            checkoutBtn.textContent = 'Check Out';
+            checkoutBtn.addEventListener('click', () => {
+                alert('Checkout process coming soon! Thank you for shopping at CoolZone.');
+            });
+
+            checkoutDiv.appendChild(totalSpan);
+            checkoutDiv.appendChild(checkoutBtn);
+
+            container.appendChild(checkoutDiv);
+        }
+
+        mainContent.appendChild(container);
+        mainContent.appendChild(renderQuickLinks());
+    }
+
+    function navigateTo(page) {
+        setActiveNav(page);
+        switch (page) {
+            case 'home':
+                renderHome();
+                break;
+            case 'electronics':
+                renderCategory('electronics');
+                break;
+            case 'clothing':
+                renderCategory('clothing');
+                break;
+            case 'books':
+                renderCategory('books');
+                break;
+            case 'sports':
+                renderCategory('sports');
+                break;
+            case 'about':
+                renderAbout();
+                break;
+            case 'cart':
+                renderCart();
+                break;
+            default:
+                renderHome();
+        }
+        mainContent.focus();
+    }
+
+    navButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = btn.dataset.page;
+            navigateTo(page);
+        });
+    });
+
+    // Initial page load
+    updateCartCount();
+    navigateTo('home');
+
+    mainContent.setAttribute('tabindex', '0');
+
+})();
+</script>
+</body>
+</html>
+
